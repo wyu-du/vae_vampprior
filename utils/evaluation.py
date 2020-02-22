@@ -37,14 +37,14 @@ def evaluate_vae(args, model, train_loader, data_loader, epoch, dir, mode):
         evaluate_kl += KL.item()
 
         # print N digits
-        if batch_idx == 1 and mode == 'validation':
-            if epoch == 1:
-                if not os.path.exists(dir + 'reconstruction/'):
-                    os.makedirs(dir + 'reconstruction/')
-                # VISUALIZATION: plot real images
-                plot_images(args, data.data.cpu().numpy()[0:9], dir + 'reconstruction/', 'real', size_x=3, size_y=3)
-            x_mean = model.reconstruct_x(x)
-            plot_images(args, x_mean.data.cpu().numpy()[0:9], dir + 'reconstruction/', str(epoch), size_x=3, size_y=3)
+#        if batch_idx == 1 and mode == 'validation':
+#            if epoch == 1:
+#                if not os.path.exists(dir + 'reconstruction/'):
+#                    os.makedirs(dir + 'reconstruction/')
+#                # VISUALIZATION: plot real images
+#                plot_images(args, data.data.cpu().numpy()[0:9], dir + 'reconstruction/', 'real', size_x=3, size_y=3)
+#            x_mean = model.reconstruct_x(x)
+#            plot_images(args, x_mean.data.cpu().numpy()[0:9], dir + 'reconstruction/', str(epoch), size_x=3, size_y=3)
 
     if mode == 'test':
         # load all data
@@ -71,26 +71,26 @@ def evaluate_vae(args, model, train_loader, data_loader, epoch, dir, mode):
         if args.dynamic_binarization:
             full_data = torch.bernoulli(full_data)
 
-        # print(model.means(model.idle_input))
-
-        # VISUALIZATION: plot real images
-        plot_images(args, test_data.data.cpu().numpy()[0:25], dir, 'real', size_x=5, size_y=5)
-
-        # VISUALIZATION: plot reconstructions
-        samples = model.reconstruct_x(test_data[0:25])
-
-        plot_images(args, samples.data.cpu().numpy(), dir, 'reconstructions', size_x=5, size_y=5)
-
-        # VISUALIZATION: plot generations
-        samples_rand = model.generate_x(25)
-
-        plot_images(args, samples_rand.data.cpu().numpy(), dir, 'generations', size_x=5, size_y=5)
-
-        if args.prior == 'vampprior':
-            # VISUALIZE pseudoinputs
-            pseudoinputs = model.means(model.idle_input).cpu().data.numpy()
-
-            plot_images(args, pseudoinputs[0:25], dir, 'pseudoinputs', size_x=5, size_y=5)
+#        # print(model.means(model.idle_input))
+#
+#        # VISUALIZATION: plot real images
+#        plot_images(args, test_data.data.cpu().numpy()[0:25], dir, 'real', size_x=5, size_y=5)
+#
+#        # VISUALIZATION: plot reconstructions
+#        samples = model.reconstruct_x(test_data[0:25])
+#
+#        plot_images(args, samples.data.cpu().numpy(), dir, 'reconstructions', size_x=5, size_y=5)
+#
+#        # VISUALIZATION: plot generations
+#        samples_rand = model.generate_x(25)
+#
+#        plot_images(args, samples_rand.data.cpu().numpy(), dir, 'generations', size_x=5, size_y=5)
+#
+#        if args.prior == 'vampprior':
+#            # VISUALIZE pseudoinputs
+#            pseudoinputs = model.means(model.idle_input).cpu().data.numpy()
+#
+#            plot_images(args, pseudoinputs[0:25], dir, 'pseudoinputs', size_x=5, size_y=5)
 
         # CALCULATE lower-bound
         t_ll_s = time.time()
