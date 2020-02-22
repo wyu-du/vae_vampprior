@@ -124,7 +124,7 @@ class VAE(Model):
 
         likelihood_test = np.array(likelihood_test)
 
-        plot_histogram(-likelihood_test, dir, mode)
+#        plot_histogram(-likelihood_test, dir, mode)
 
         return -np.mean(likelihood_test)
 
