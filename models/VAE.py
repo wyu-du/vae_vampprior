@@ -4,7 +4,7 @@ import numpy as np
 
 import math
 
-from scipy.misc import logsumexp
+from scipy.special import logsumexp
 
 
 import torch
@@ -85,6 +85,13 @@ class VAE(Model):
             loss = torch.mean(loss)
             RE = torch.mean(RE)
             KL = torch.mean(KL)
+        
+        if KL.sum() < 0:
+            print('q_z:')
+            print(torch.exp(log_q_z[0]))
+            print('p_z:')
+            print(torch.exp(log_p_z[0]))
+            print()
 
         return loss, RE, KL
 
