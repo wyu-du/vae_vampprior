@@ -88,11 +88,11 @@ class VAE(Model):
         
         if KL.sum() < 0:
             print(KL)
-        print('q_z:')
-        print(torch.exp(log_q_z[0]))
-        print('p_z:')
-        print(torch.exp(log_p_z[0]))
-        print()
+            print('q_z:')
+            print(torch.exp(log_q_z[0]))
+            print('p_z:')
+            print(torch.exp(log_p_z[0]))
+            print()
 
         return loss, RE, KL
 
