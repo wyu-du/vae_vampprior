@@ -396,7 +396,61 @@ def load_dataset(args, **kwargs):
         train_loader, val_loader, test_loader, args = load_freyfaces(args, **kwargs)
     elif args.dataset_name == 'cifar10':
         train_loader, val_loader, test_loader, args = load_cifar10(args, **kwargs)
+    elif args.dataset_name == '20news':
+        train_loader, val_loader, test_loader, args = load_20news(args, **kwargs)
     else:
         raise Exception('Wrong name of the dataset!')
+
+    return train_loader, val_loader, test_loader, args
+
+# ======================================================================================================================
+def load_20news(args, TRAIN = 10000, VAL = 1268, TEST = 7505, **kwargs):
+    # set args
+    args.input_size = [1, 2000]
+    args.input_type = 'binary'
+    args.dynamic_binarization = False
+
+    # start processing
+    data = []
+    with open('datasets/20news/corpus.txt', 'r') as f:
+        lines = f.read().split('\n')
+        for line in lines:
+            if len(line) == 0: continue
+            tmp = [int(t)-1 for t in line.split()]
+            one_hot = torch.nn.functional.one_hot(torch.tensor(tmp), num_classes=2000)
+            one_hot = one_hot.sum(dim=0)
+            data.append(one_hot.float())
+    data = torch.stack(data)
+
+    # train images
+    x_train = data[0:TRAIN]
+    # validation images
+    x_val = data[TRAIN:(TRAIN + VAL)]
+    # test images
+    x_test = data[(TRAIN + VAL):(TRAIN + VAL + TEST)]
+
+    # idle y's
+    y_train = torch.zeros( (TRAIN, 1) )
+    y_val = torch.zeros( (VAL, 1) )
+    y_test = torch.zeros( (TEST, 1) )
+
+    # pytorch data loader
+    train = data_utils.TensorDataset(x_train, y_train)
+    train_loader = data_utils.DataLoader(train, batch_size=args.batch_size, shuffle=True, **kwargs)
+
+    validation = data_utils.TensorDataset(x_val, y_val)
+    val_loader = data_utils.DataLoader(validation, batch_size=args.test_batch_size, shuffle=False, **kwargs)
+
+    test = data_utils.TensorDataset(x_test, y_test)
+    test_loader = data_utils.DataLoader(test, batch_size=args.test_batch_size, shuffle=True, **kwargs)
+
+    # setting pseudo-inputs inits
+    if args.use_training_data_init == 1:
+        args.pseudoinputs_std = 0.01
+        init = x_train[0:args.number_components].T
+        args.pseudoinputs_mean = torch.from_numpy( init + args.pseudoinputs_std * np.random.randn(np.prod(args.input_size), args.number_components) ).float()
+    else:
+        args.pseudoinputs_mean = 0.5
+        args.pseudoinputs_std = 0.02
 
     return train_loader, val_loader, test_loader, args
