@@ -41,7 +41,7 @@ class VAE(Model):
         )
 
         if self.args.input_type == 'binary':
-            self.p_x_mean = NonLinear(300, np.prod(self.args.input_size), activation=nn.Sigmoid())
+            self.p_x_mean = NonLinear(300, np.prod(self.args.input_size), activation=nn.Softmax())
         elif self.args.input_type == 'gray' or self.args.input_type == 'continuous':
             self.p_x_mean = NonLinear(300, np.prod(self.args.input_size), activation=nn.Sigmoid())
             self.p_x_logvar = NonLinear(300, np.prod(self.args.input_size), activation=nn.Hardtanh(min_val=-4.5,max_val=0))
