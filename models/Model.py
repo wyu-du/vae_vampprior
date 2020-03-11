@@ -36,13 +36,17 @@ class Model(nn.Module):
             self.idle_input = self.idle_input.cuda()
 
     def reparameterize(self, mu, logvar):
-        std = logvar.mul(0.5).exp_()
-        if self.args.cuda:
-            eps = torch.cuda.FloatTensor(std.size()).normal_()
-        else:
-            eps = torch.FloatTensor(std.size()).normal_()
-        eps = Variable(eps)
-        return eps.mul(std).add_(mu)
+#        std = logvar.mul(0.5).exp_()
+#        if self.args.cuda:
+#            eps = torch.cuda.FloatTensor(std.size()).normal_()
+#        else:
+#            eps = torch.FloatTensor(std.size()).normal_()
+#        eps = Variable(eps)
+#        return eps.mul(std).add_(mu)
+        eps = torch.randn((mu.size(0), mu.size(1)))
+        if self.args.cuda: eps = eps.cuda()
+        z_q = torch.mul(0.5*torch.exp(logvar), eps) + mu
+        return z_q
 
     def calculate_loss(self):
         return 0.

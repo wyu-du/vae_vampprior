@@ -41,7 +41,7 @@ class VAE(Model):
         )
 
         if self.args.input_type == 'binary':
-            self.p_x_mean = NonLinear(300, np.prod(self.args.input_size), activation=nn.Softmax())
+            self.p_x_mean = NonLinear(300, np.prod(self.args.input_size), activation=nn.Sigmoid())
         elif self.args.input_type == 'gray' or self.args.input_type == 'continuous':
             self.p_x_mean = NonLinear(300, np.prod(self.args.input_size), activation=nn.Sigmoid())
             self.p_x_logvar = NonLinear(300, np.prod(self.args.input_size), activation=nn.Hardtanh(min_val=-4.5,max_val=0))
@@ -78,16 +78,11 @@ class VAE(Model):
         log_p_z = self.log_p_z(z_q)
         log_q_z = log_Normal_diag(z_q, z_q_mean, z_q_logvar, dim=1)
         KL = -(log_p_z - log_q_z)
-        
-        if KL.sum() < 0:
-            print(KL)
-            print('q_z:')
-            print(torch.exp(log_q_z[0]))
-            print('p_z:')
-            print(torch.exp(log_p_z[0]))
-            print()
 
         loss = - RE + beta * KL
+        if KL.sum() < 0:
+            print(KL)
+            print('===============')
 
         if average:
             loss = torch.mean(loss)

@@ -33,7 +33,7 @@ parser.add_argument('--lr', type=float, default=0.0005, metavar='LR',
 parser.add_argument('--early_stopping_epochs', type=int, default=50, metavar='ES',
                     help='number of epochs for early stopping')
 
-parser.add_argument('--warmup', type=int, default=0, metavar='WU',
+parser.add_argument('--warmup', type=int, default=100, metavar='WU',
                     help='number of epochs for warmu-up')
 
 # cuda
@@ -47,7 +47,7 @@ parser.add_argument('--z1_size', type=int, default=40, metavar='M1',
                     help='latent size')
 parser.add_argument('--z2_size', type=int, default=40, metavar='M2',
                     help='latent size')
-parser.add_argument('--input_size', type=int, default=[1, 2000], metavar='D',
+parser.add_argument('--input_size', type=int, default=[1, 28, 28], metavar='D',
                     help='input size')
 
 parser.add_argument('--activation', type=str, default=None, metavar='ACT',
@@ -136,6 +136,7 @@ def run(args, kwargs):
         model.cuda()
 
     optimizer = AdamNormGrad(model.parameters(), lr=args.lr)
+#    optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
     # ======================================================================================================================
     print(args)
