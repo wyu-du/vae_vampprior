@@ -23,7 +23,7 @@ def log_Normal_standard(x, average=False, dim=None):
 
 def log_Bernoulli(x, mean, average=False, dim=None):
     probs = torch.clamp( mean, min=min_epsilon, max=max_epsilon )
-    log_bernoulli = x * torch.log( probs ) #+ (1. - x ) * torch.log( 1. - probs )
+    log_bernoulli = x * torch.log( probs ) + (1. - x ) * torch.log( 1. - probs )
     if average:
         return torch.mean( log_bernoulli, dim )
     else:
