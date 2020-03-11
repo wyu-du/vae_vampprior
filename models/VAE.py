@@ -78,13 +78,7 @@ class VAE(Model):
         log_p_z = self.log_p_z(z_q)
         log_q_z = log_Normal_diag(z_q, z_q_mean, z_q_logvar, dim=1)
         KL = -(log_p_z - log_q_z)
-
-        loss = - RE + beta * KL
-
-        if average:
-            loss = torch.mean(loss)
-            RE = torch.mean(RE)
-            KL = torch.mean(KL)
+        print(z_q.size())
         
         if KL.sum() < 0:
             print(KL)
@@ -94,6 +88,13 @@ class VAE(Model):
             print(torch.exp(log_p_z[0]))
             print()
 
+        loss = - RE + beta * KL
+
+        if average:
+            loss = torch.mean(loss)
+            RE = torch.mean(RE)
+            KL = torch.mean(KL)
+        
         return loss, RE, KL
 
     def calculate_likelihood(self, X, dir, mode='test', S=5000, MB=100):
