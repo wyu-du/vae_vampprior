@@ -471,7 +471,7 @@ def load_rcv(args, TRAIN = 635532, VAL = 158882, TEST = 10000, **kwargs):
         for line in lines:
             if len(line) == 0: continue
             tmp = [int(t) for t in line.split()]
-            one_hot = torch.nn.functional.one_hot(torch.tensor(tmp), num_classes=2000)
+            one_hot = torch.nn.functional.one_hot(torch.tensor(tmp), num_classes=10000)
             one_hot = one_hot.sum(dim=0)
             data.append(one_hot.float())
     data = torch.stack(data)
